@@ -3,7 +3,7 @@
   
   tasks:
   - name: Reboot server
-    reboot: 
-      pre_reboot_delay: 0
-    become: true
-    failed_when: false
+    shell: (sleep 2 && shutdown -r now) &
+    async: 1
+    poll: 0
+    ignore_errors: true
