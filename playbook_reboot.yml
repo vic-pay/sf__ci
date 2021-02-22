@@ -6,3 +6,4 @@
     reboot: 
       pre_reboot_delay: 0
     become: true
+    failed_when: false
