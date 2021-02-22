@@ -1,4 +1,4 @@
 # sf__ci
 
 ping
-![ping_settings_1](https://imgur.com/2KYnlKx)
+![ping_settings_1](.github/ping_settings_1.png)
