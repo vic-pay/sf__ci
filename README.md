@@ -37,9 +37,38 @@
 ### Задание 21.5, пункт 1
 Настроить в Jenkins джоб (job): Запуск контейнера с WordPress на staging-машине.
 Настройки и вывод приведены на скриншотах.
+Для доступа к wordpress нужно перейти по адресу http://10.0.3.110/
+
 ![wordpress_staging_settings_1](.github/wordpress_staging_settings_1.png)
 ![wordpress_staging_settings_2](.github/wordpress_staging_settings_2.png)
 ![wordpress_staging_output](.github/wordpress_staging_output.png)
 
-ping
+### Задание 21.5, пункт 2
+Настроить в Jenkins джоб (job): Запуск контейнера с WordPress на production-машине
+Настройки аналогичны предыдущему пункту, за исключением Host subset: нужно указать ci-production
+
+![wordpress_production_output](.github/wordpress_production_output.png)
+
+### Задание 21.5, пункт 3
+Настроить в Jenkins джоб (job): Джоба с использованием планировщика, где раз в 5 минут скрипт проверяет, пингуются ли production и staging серверы.
+Настройки и вывод приведены на скриншотах.
+
 ![ping_settings_1](.github/ping_settings_1.png)
+![ping_settings_2](.github/ping_settings_2.png)
+![ping_summary](.github/ping_summary.png)
+![ping_output](.github/ping_output.png)
+
+### Задание 21.5, пункт 4 
+Настроить в Jenkins джоб (job): Джоба, которая выполняет получение данных uptime с production и staging.
+Настройки аналогичны пункту 1, используется playbook_uptime.yml и не используется Host subset
+
+![uptime_output](.github/uptime_output.png)
+
+### Задание 21.5, пункт 5 
+Настроить в Jenkins джоб (job): Джоба, которая выполняет перезагрузку production и staging с возможность выбора одной из них или всех сразу (build with params). 
+Настройки и вывод приведены на скриншотах.
+
+![reboot_settings_1](.github/reboot_settings_1.png)
+![reboot_settings_2](.github/reboot_settings_2.png)
+![reboot_parameter](.github/reboot_parameter.png)
+![reboot_output](.github/reboot_output.png)
