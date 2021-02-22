@@ -1,0 +1,7 @@
+---
+- hosts: ci-staging,ci-production
+  gather_facts: false
+  tasks:
+  - name: Reboot server
+    shell: reboot
+    become: true
