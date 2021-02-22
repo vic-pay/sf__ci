@@ -3,5 +3,6 @@
   gather_facts: false
   tasks:
   - name: Reboot server
-    shell: reboot
+    reboot: 
+      pre_reboot_delay: 0
     become: true
