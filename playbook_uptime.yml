@@ -1,0 +1,12 @@
+---
+- hosts: ci-staging,ci-production
+  gather_facts: false
+
+  tasks:
+  - name: Gather uptime
+    shell: uptime
+    register: uptime
+
+  - name: Print uptime
+    debug:
+      msg: "{{ uptime.stdout }}"

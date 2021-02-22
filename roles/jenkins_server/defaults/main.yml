@@ -1,0 +1,2 @@
+---
+ssh_pubkey_local_path: roles/jenkins_slave/files/id_rsa.pub

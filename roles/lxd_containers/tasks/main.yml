@@ -1,0 +1,41 @@
+---
+- name: Make lxd profile for containers
+  lxd_profile:
+    name: "ci-profile"
+    config: 
+      security.nesting: "true"
+      security.privileged: "true"
+    description: "profile for nested containers"
+    devices:
+      eth0:
+        name: eth0
+        nictype: bridged
+        parent: lxdbr0
+        type: nic
+      root:
+        path: /
+        pool: mnt-pool
+        type: disk
+
+- name: Make and start lxd containers
+  lxd_container:
+    name: "{{ hostvars[item].inventory_hostname }}"
+    state: started
+    source:
+      type: image
+      mode: pull
+      server: https://images.linuxcontainers.org
+      protocol: simplestreams 
+      alias: ubuntu/focal/amd64
+    profiles: ["ci-profile"]
+    config: {}
+    devices: 
+      eth0: 
+        name: eth0
+        nictype: bridged
+        parent: lxdbr0
+        type: nic
+        ipv4.address: "{{ hostvars[item].ip_address }}"
+    wait_for_ipv4_addresses: true
+    timeout: 600
+  with_items: "{{ groups['lxd_containers'] }}"

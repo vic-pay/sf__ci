@@ -1,0 +1,12 @@
+---
+all:
+  hosts:
+    ci-staging:
+      ansible_connection: ssh
+      ansible_user: jenkins
+      ansible_host: 10.0.3.110
+
+    ci-production:
+      ansible_connection: ssh
+      ansible_user: jenkins
+      ansible_host: 10.0.3.120

@@ -1,0 +1,8 @@
+---
+- name: Create wordpress container
+  docker_container:
+    name: "wordpress-server"
+    image: "library/wordpress"
+    ports:
+        - "80:80"
+    recreate: yes

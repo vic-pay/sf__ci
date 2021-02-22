@@ -1,0 +1,66 @@
+---
+- name: Make {{ lxd_storage_dir }} directory
+  file:
+    path: "{{ lxd_storage_dir }}"
+    state: directory
+
+- name: Set lxd debconf  
+  debconf:
+    name: lxd
+    question: lxd/snap-track
+    value: "4.0"
+    vtype: select
+
+- name: Instal lxd package
+  apt:
+    name: ['lxd']
+    state: present
+    update_cache: True
+  register: lxd_install
+
+- name: Create var with lxd preseed
+  set_fact:
+    lxd_preseed: "{{ lookup('template', 'templates/lxd-server.yml') }}"
+  when: lxd_install.changed
+
+- name: Init lxd
+  command: lxd init --preseed
+  args:
+    stdin: "{{ lxd_preseed }}"
+  when: lxd_install.changed
+
+- name: Create var with lxd pools
+  command: lxc storage list
+  register: lxd_pool_list
+  changed_when: False
+
+- name: Set lxd pool
+  command: lxc storage create {{ lxd_storage_name }} dir source={{ lxd_storage_dir }}
+  when: not lxd_pool_list.stdout is search(lxd_storage_dir)
+
+- name: Create var with {{ lxd_net_adapter }} network
+  command: lxc network show {{ lxd_net_adapter }}
+  register: lxd_net_settings
+  changed_when: False
+
+- name: Set {{ lxd_net_adapter }}
+  command: "{{ item.command }}"
+  when: not lxd_net_settings.stdout is search( item.setting )
+  loop:
+    - { command: 'lxc network set lxdbr0 ipv4.address={{ lxd_net_address }}', setting: 'ipv4.address: {{ lxd_net_address }}'}
+    - { command: 'lxc network set lxdbr0 ipv6.address=none',                  setting: 'ipv6.address: none'}
+    - { command: 'lxc network set lxdbr0 ipv4.nat={{ lxd_net_nat }}',         setting: 'ipv4.nat: "{{ lxd_net_nat }}"'}
+
+- name: Set {{ lxd_net_adapter }}
+  command: "{{ item.command }}"
+  when: lxd_net_settings.stdout is search( item.setting )
+  loop:
+    - { command: 'lxc network unset {{ lxd_net_adapter }} raw.dnsmasq', setting: 'raw.dnsmasq'}
+    - { command: 'lxc network unset {{ lxd_net_adapter }} dns.mode',    setting: 'dns.mode'}
+
+- name: Add local user to lxd group
+  user:
+    name: "{{ ansible_user }}"
+    groups: lxd
+    append: yes
+    

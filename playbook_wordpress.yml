@@ -1,0 +1,4 @@
+---
+- hosts: ci-staging,ci-production
+  roles:
+    - wordpress

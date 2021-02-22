@@ -1,0 +1,22 @@
+networks:
+- config:
+    ipv4.address: "{{ lxd_net_address }}"
+    ipv6.address: none
+  description: ""
+  name: "{{ lxd_net_adapter }}"
+  type: ""
+storage_pools:
+- name: "{{ lxd_storage_name }}"
+  driver: dir
+  config:
+    source: "{{ lxd_storage_dir }}"
+profiles:
+- config: {}
+  description: ""
+  devices:
+    eth0:
+      name: eth0
+      network: "{{ lxd_net_adapter }}"
+      type: nic
+  name: default
+cluster: null

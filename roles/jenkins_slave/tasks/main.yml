@@ -1,0 +1,38 @@
+---
+- name: Install packages
+  become: true
+  apt:
+    name: ['ssh']
+    state: 'present'
+
+- name: Make jenkins group
+  group:
+    name: jenkins
+    state: present
+
+- name: Make jenkins user
+  user:
+    name: jenkins
+    group: jenkins
+    groups: docker,sudo
+    expires: -1
+
+- name: Add ssh authorized key from jenkins
+  authorized_key:
+    user: jenkins
+    state: present
+    key: "{{ lookup('file', 'files/id_rsa.pub') }}"
+
+- name: Add ssh authorized key from localhost (for debug)
+  authorized_key:
+    user: jenkins
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Allow jenkins to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%jenkins'
+    line: '%jenkins ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s

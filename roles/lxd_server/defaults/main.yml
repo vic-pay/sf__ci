@@ -1,0 +1,6 @@
+---
+lxd_storage_dir: /mnt/lxd
+lxd_storage_name: mnt-pool
+lxd_net_adapter: lxdbr0
+lxd_net_address: 10.0.3.1/24
+lxd_net_nat: True

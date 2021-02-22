@@ -1,0 +1,22 @@
+---
+all:
+  children:
+    lxd_servers:
+      hosts:
+        localhost:
+          ansible_connection: local
+
+    lxd_containers:
+      hosts:
+        ci-jenkins:
+          ansible_connection: lxd
+          ansible_host: ci-jenkins
+          ip_address: 10.0.3.100
+        ci-staging:
+          ansible_connection: lxd
+          ansible_host: ci-staging
+          ip_address: 10.0.3.110
+        ci-production:
+          ansible_connection: lxd
+          ansible_host: ci-production
+          ip_address: 10.0.3.120

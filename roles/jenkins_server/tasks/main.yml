@@ -1,0 +1,53 @@
+---
+#SSH
+- name: Ensure jenkins directory on docker host
+  file:
+    state: directory
+    owner: "1000"
+    group: "1000"
+    path: /opt/jenkins/.ssh
+
+- name: Generate an OpenSSH rsa keypair
+  openssh_keypair:
+    path: /opt/jenkins/.ssh/id_rsa
+    size: 2048
+    owner: "1000"
+    group: "1000"
+  register: ssh_keys
+
+- name: Save pubkey for another roles
+  local_action: 
+    module: copy 
+    content: "{{ ssh_keys.public_key }}"
+    dest: "{{ ssh_pubkey_local_path }}"
+
+#Docker
+- name: Create build directory
+  file:
+    path: /root/jenkins-dockerfile
+    state: directory
+    
+- name: Copy Dockerfile
+  copy:
+    src: files/Dockerfile
+    dest: /root/jenkins-dockerfile/Dockerfile
+
+- name: Build container image
+  docker_image:
+    name: sf-jenkins:v1.0
+    build:
+      path: /root/jenkins-dockerfile
+      pull: yes
+    source: build
+    state: present
+
+- name: Create jenkins container
+  docker_container:
+    name: "jenkins-server"
+    image: "sf-jenkins:v1.0"
+    ports:
+        - "8080:8080"
+        - "50000:50000"
+    volumes:
+        - "/opt/jenkins:/var/jenkins_home"
+    recreate: yes

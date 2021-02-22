@@ -1,0 +1,20 @@
+---
+- hosts: lxd_servers
+  become: yes
+  become_method: sudo
+  become_user: root
+  roles:
+    - lxd_server
+    - lxd_containers
+
+- hosts: lxd_containers
+  roles:
+    - docker
+
+- hosts: ci-jenkins
+  roles:
+    - jenkins_server
+
+- hosts: ci-staging, ci-production
+  roles:
+    - jenkins_slave
